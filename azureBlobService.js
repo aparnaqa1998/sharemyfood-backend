@@ -1,16 +1,19 @@
-const { DefaultAzureCredential } = require("@azure/identity");
-const { BlobServiceClient } = require("@azure/storage-blob");
+const { BlobServiceClient } = require('@azure/storage-blob');
+const { DefaultAzureCredential } = require('@azure/identity');
 
-// Create a BlobServiceClient using Managed Identity
-const credential = new DefaultAzureCredential();
-const blobServiceClient = new BlobServiceClient(
-    `https://blobsharemyfoodsa.blob.core.windows.net`,
-    credential
-);
-async function uploadToBlob(containerName, blobName, data) {
-    const containerClient = blobServiceClient.getContainerClient(containerName);
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-    await blockBlobClient.upload(data, data.length);
-}
+const uploadToBlob = async (containerName, blobName, content) => {
+  const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
+  if (!accountName) throw new Error("Azure Storage account name not found in environment variables");
+
+  const blobServiceClient = new BlobServiceClient(
+    `https://${accountName}.blob.core.windows.net`,
+    new DefaultAzureCredential()
+  );
+
+  const containerClient = blobServiceClient.getContainerClient(containerName);
+  const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+  await blockBlobClient.upload(content, Buffer.byteLength(content));
+};
 
 module.exports = { uploadToBlob };
