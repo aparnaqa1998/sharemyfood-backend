@@ -3,6 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const { uploadToBlob } = require('./azureBlobService');
+const { listBlobs } = require('./azureBlobService');
+const { downloadFromBlob} = require('./azureBlobService');
 
 const app = express();
 app.use(cors());
