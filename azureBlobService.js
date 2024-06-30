@@ -1,11 +1,15 @@
+//require('dotenv').config();
 const { BlobServiceClient } = require('@azure/storage-blob');
 const { DefaultAzureCredential } = require('@azure/identity');
+const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+if (!connectionString) {
+  throw new Error("Missing AZURE_STORAGE_CONNECTION_STRING environment variable");
+}
+const blobServiceClient = BlobServiceClient.fromConnectionString(
+  connectionString
+);
 const uploadToBlob = async (containerName, blobName, content) => {
   const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
-  const blobServiceClient = new BlobServiceClient(
-    `https://${accountName}.blob.core.windows.net`,
-    new DefaultAzureCredential()
-  );
   const containerClient = blobServiceClient.getContainerClient(containerName);
   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
