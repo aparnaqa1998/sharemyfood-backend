@@ -1,4 +1,4 @@
-//require('dotenv').config();
+require('dotenv').config();
 const { BlobServiceClient } = require('@azure/storage-blob');
 const { DefaultAzureCredential } = require('@azure/identity');
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
@@ -44,4 +44,18 @@ const streamToBuffer = async (readableStream) => {
       readableStream.on("error", reject);
     });
   };
-module.exports = { uploadToBlob, listBlobs ,downloadFromBlob};
+  async function deleteUserBlobs(containerName, userIdentifier) {
+    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+
+    let blobs = containerClient.listBlobsFlat(); // List all blobs in the container
+
+    for await (const blob of blobs) {
+        if (blob.name.includes(userIdentifier)) { // Check if the blob name contains the user identifier
+            const blobClient = containerClient.getBlobClient(blob.name);
+            console.log(`Deleting blob: ${blob.name}`);
+            await blobClient.delete();
+        }
+    }
+}
+module.exports = { uploadToBlob, listBlobs ,downloadFromBlob,deleteUserBlobs};
