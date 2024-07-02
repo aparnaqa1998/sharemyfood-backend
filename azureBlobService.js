@@ -1,4 +1,4 @@
-require('dotenv').config();
+//require('dotenv').config();
 const { BlobServiceClient } = require('@azure/storage-blob');
 const { DefaultAzureCredential } = require('@azure/identity');
 const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;

@@ -1,4 +1,4 @@
-require('dotenv').config();
+//require('dotenv').config();
 const { ShareServiceClient } = require('@azure/storage-file-share');
 const fs = require('fs');
 const path = require('path');
