@@ -17,6 +17,14 @@ app.use(bodyParser.json());
 
 // Set up multer for handling file uploads
 const upload = multer({ dest: 'uploads/' }); // Temporary storage for uploaded files
+const azureStorageUrl =  process.env.AZURE_STORAGE_URL;
+     const   azureSAS = process.env.AZURE_SAS_TOKEN;
+   const    apiURL = process.env.APIURL;
+app.get('/config', (req, res) => {
+  res.json({
+    azureStorageUrl,azureSAS,apiURL
+  });
+});
 
 app.post('/submit-donor', async (req, res) => {
   const { name, email, phone, address, password } = req.body;
